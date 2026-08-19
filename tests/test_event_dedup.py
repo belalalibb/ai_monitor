@@ -1,4 +1,3 @@
-import pytest
 from data_mining.core.event_dedup import generate_canonical_event_key
 from data_mining.models.enums import EventType
 

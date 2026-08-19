@@ -1,4 +1,3 @@
-import re
 from typing import Tuple
 
 BLOCKED_DOMAINS = {

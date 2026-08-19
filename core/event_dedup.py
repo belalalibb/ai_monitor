@@ -1,5 +1,4 @@
 import hashlib
-import re
 from typing import Optional
 from data_mining.core.normalizer import normalize_entity_name
 from data_mining.models.enums import EventType

@@ -1,8 +1,6 @@
 import argparse
-import json
 import sys
 from pathlib import Path
-from pprint import pprint
 
 # Ensure project root is in sys.path when running from inside data_mining directory
 CURRENT_DIR = Path(__file__).resolve().parent
@@ -13,8 +11,6 @@ if str(CURRENT_DIR) not in sys.path:
     sys.path.insert(0, str(CURRENT_DIR))
 
 from data_mining.config import settings
-from data_mining.core.project_knowledge import ProjectKnowledgeBase
-from data_mining.core.source_registry import get_default_providers
 from data_mining.db.repository import Repository
 from data_mining.notifications.telegram import TelegramNotificationProvider
 from data_mining.scheduler.task_runner import PipelineTaskRunner
@@ -96,9 +92,7 @@ def main():
         print(f"  Saved to     : {settings.PROJECT_CAPABILITIES_PATH}\n")
 
     elif args.command == "queries":
-        from data_mining.search.query_engine import DynamicQueryEngine
         repo = Repository()
-        engine = DynamicQueryEngine(repo)
         queries = repo.get_top_search_queries(limit=25)
         print(f"\n{'ID':<4} {'Score':<6} {'Category':<18} {'Query'}")
         print("-" * 75)

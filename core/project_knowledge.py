@@ -1,7 +1,7 @@
 import json
 import logging
 from pathlib import Path
-from typing import List, Optional, Set
+from typing import Optional
 from data_mining.config import settings
 from data_mining.core.normalizer import normalize_entity_name
 from data_mining.models.schemas import ProjectCapabilityMap, utc_now_iso

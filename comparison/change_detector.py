@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 from data_mining.core.event_dedup import generate_canonical_event_key
 from data_mining.models.enums import EventType, Priority
 from data_mining.models.schemas import ChangeEvent, FreeServiceInfo, ModelInfo

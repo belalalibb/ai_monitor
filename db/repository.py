@@ -1,23 +1,16 @@
 import json
-import sqlite3
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 from data_mining.db.database import get_db, init_db
 from data_mining.models.enums import (
-    ComparisonStatus,
     EventType,
-    FreeStatus,
     NotificationStatus,
     Priority,
-    RunStatus,
     SourceReliability,
 )
 from data_mining.models.schemas import (
-    CapabilityInfo,
     ChangeEvent,
     ComparisonResult,
-    EvidenceRecord,
     FreeServiceInfo,
     ModelInfo,
     MonitorRunStats,
@@ -132,28 +125,22 @@ class Repository:
         semantic_hash: Optional[str] = None,
         discovered_by_query_id: Optional[int] = None,
     ) -> Tuple[int, bool]:
-        """Returns (url_id, is_new)."""
+        """Returns (url_id, is_new). Atomic via ON CONFLICT (no check-then-insert race)."""
         now = utc_now_iso()
         with get_db(self.db_path) as conn:
-            cur = conn.execute("SELECT id FROM urls WHERE url_hash = ?", (url_hash,))
-            existing = cur.fetchone()
-            if existing:
-                conn.execute(
-                    """
-                    UPDATE urls SET
-                        last_seen = ?,
-                        content_hash = COALESCE(?, content_hash),
-                        semantic_hash = COALESCE(?, semantic_hash)
-                    WHERE id = ?;
-                    """,
-                    (now, content_hash, semantic_hash, existing["id"]),
-                )
-                return existing["id"], False
+            # Detect novelty atomically: a pre-existing row means not new.
+            cur = conn.execute("SELECT 1 FROM urls WHERE url_hash = ?", (url_hash,))
+            was_existing = cur.fetchone() is not None
 
             cur = conn.execute(
                 """
                 INSERT INTO urls (raw_url, canonical_url, url_hash, domain, first_seen, last_seen, content_hash, semantic_hash, discovered_by_query_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(url_hash) DO UPDATE SET
+                    last_seen = excluded.last_seen,
+                    content_hash = COALESCE(excluded.content_hash, urls.content_hash),
+                    semantic_hash = COALESCE(excluded.semantic_hash, urls.semantic_hash)
+                RETURNING id;
                 """,
                 (
                     raw_url,
@@ -167,7 +154,8 @@ class Repository:
                     discovered_by_query_id,
                 ),
             )
-            return cur.lastrowid, True
+            row = cur.fetchone()
+            return row["id"], not was_existing
 
     def is_domain_known(self, domain: str) -> bool:
         with get_db(self.db_path) as conn:
@@ -376,25 +364,50 @@ class Repository:
         entity_name: str,
         title: str,
     ) -> Tuple[int, bool]:
-        """Returns (event_group_id, is_new_event)."""
+        """Returns (event_group_id, is_new_event). Race-safe via ON CONFLICT DO NOTHING."""
         now = utc_now_iso()
         with get_db(self.db_path) as conn:
             cur = conn.execute(
-                "SELECT id, notification_sent FROM event_groups WHERE canonical_event_key = ?",
-                (canonical_event_key,),
-            )
-            existing = cur.fetchone()
-            if existing:
-                return existing["id"], False
-
-            cur = conn.execute(
                 """
                 INSERT INTO event_groups (canonical_event_key, event_type, provider, entity_name, title, created_at, notification_sent)
-                VALUES (?, ?, ?, ?, ?, ?, 0);
+                VALUES (?, ?, ?, ?, ?, ?, 0)
+                ON CONFLICT(canonical_event_key) DO NOTHING
+                RETURNING id;
                 """,
                 (canonical_event_key, event_type.value, provider, entity_name, title, now),
             )
-            return cur.lastrowid, True
+            row = cur.fetchone()
+            if row:
+                return row["id"], True
+
+            # Row already existed (or was inserted concurrently)
+            cur = conn.execute(
+                "SELECT id FROM event_groups WHERE canonical_event_key = ?",
+                (canonical_event_key,),
+            )
+            existing = cur.fetchone()
+            return existing["id"], False
+
+    def try_claim_event_group_notification(self, event_group_id: int) -> bool:
+        """
+        Atomically claims the right to notify for an event group.
+        Returns True only for the single caller that flips notification_sent 0 -> 1.
+        Eliminates the check-then-send race that caused duplicate notifications.
+        """
+        with get_db(self.db_path) as conn:
+            cur = conn.execute(
+                "UPDATE event_groups SET notification_sent = 1 WHERE id = ? AND notification_sent = 0",
+                (event_group_id,),
+            )
+            return cur.rowcount == 1
+
+    def release_event_group_notification_claim(self, event_group_id: int) -> None:
+        """Releases a previously acquired claim (e.g. after a failed send) so retries remain possible."""
+        with get_db(self.db_path) as conn:
+            conn.execute(
+                "UPDATE event_groups SET notification_sent = 0 WHERE id = ?",
+                (event_group_id,),
+            )
 
     def mark_event_group_notified(self, event_group_id: int) -> None:
         with get_db(self.db_path) as conn:
@@ -511,7 +524,6 @@ class Repository:
             if not q:
                 return
 
-            total_runs = (q["results_count"] // max(1, results_count)) + 1
             new_yield = (new_domains * 2.0) + (new_models * 3.0) + (new_services * 3.0)
             penalty = 0.5 if (results_count > 0 and (new_domains + new_models + new_services) == 0) else 0.0
 

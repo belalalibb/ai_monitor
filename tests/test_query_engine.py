@@ -1,6 +1,5 @@
 import tempfile
 from pathlib import Path
-import pytest
 from data_mining.db.repository import Repository
 from data_mining.search.query_engine import DynamicQueryEngine
 

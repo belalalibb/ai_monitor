@@ -36,8 +36,8 @@ class NotificationManager:
             logger.info(f"Skipping low priority event: {event.title}")
             return NotificationStatus.SKIPPED
 
-        # Deduplication check
-        if event_group_id and self.repo.is_event_group_notified(event_group_id):
+        # Atomic deduplication claim: only one caller wins the right to send
+        if event_group_id and not self.repo.try_claim_event_group_notification(event_group_id):
             logger.info(f"Notification for event group {event_group_id} already sent. Suppressing duplicate.")
             return NotificationStatus.SUPPRESSED_DUPLICATE
 
@@ -88,8 +88,9 @@ class NotificationManager:
             priority=event.priority,
         )
 
-        if event_group_id and status == NotificationStatus.SENT:
-            self.repo.mark_event_group_notified(event_group_id)
+        # Claim was taken upfront; release it if the send actually failed so a retry can occur
+        if event_group_id and status != NotificationStatus.SENT:
+            self.repo.release_event_group_notification_claim(event_group_id)
 
         self.repo.save_notification(
             event_group_id=event_group_id,
@@ -109,7 +110,8 @@ class NotificationManager:
         service: FreeServiceInfo,
         event_group_id: Optional[int] = None,
     ) -> NotificationStatus:
-        if event_group_id and self.repo.is_event_group_notified(event_group_id):
+        # Atomic deduplication claim: only one caller wins the right to send
+        if event_group_id and not self.repo.try_claim_event_group_notification(event_group_id):
             logger.info(f"Free service event {event_group_id} already notified. Suppressing duplicate.")
             return NotificationStatus.SUPPRESSED_DUPLICATE
 
@@ -133,8 +135,9 @@ class NotificationManager:
             priority=event.priority,
         )
 
-        if event_group_id and status == NotificationStatus.SENT:
-            self.repo.mark_event_group_notified(event_group_id)
+        # Claim was taken upfront; release it if the send actually failed so a retry can occur
+        if event_group_id and status != NotificationStatus.SENT:
+            self.repo.release_event_group_notification_claim(event_group_id)
 
         self.repo.save_notification(
             event_group_id=event_group_id,

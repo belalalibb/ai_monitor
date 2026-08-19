@@ -1,4 +1,3 @@
-import pytest
 from data_mining.extractors.free_ai_extractor import FreeAIExtractor
 from data_mining.models.enums import FreeStatus
 

@@ -5,6 +5,7 @@ from typing import Dict, Optional, Tuple
 import httpx
 from data_mining.config import settings
 from data_mining.core.normalizer import extract_domain
+from data_mining.core.security import is_url_safe_to_fetch
 
 logger = logging.getLogger("data_mining.fetcher")
 
@@ -34,6 +35,11 @@ class HttpFetcher:
         Fetches web page content with rate limiting, user agent rotation,
         and exponential retry backoff. Returns (html_content, status_code).
         """
+        # SSRF guard: refuse to fetch internal / private / metadata addresses
+        if not is_url_safe_to_fetch(url):
+            logger.warning(f"Blocked unsafe URL (SSRF guard): {url}")
+            return None
+
         domain = extract_domain(url)
         self._respect_rate_limit(domain)
 

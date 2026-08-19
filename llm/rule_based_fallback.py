@@ -1,5 +1,5 @@
 import re
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 from data_mining.core.normalizer import extract_domain, normalize_entity_name
 from data_mining.llm.base import LLMProvider
 from data_mining.models.enums import ComparisonStatus, DiscoveryType, FreeStatus, Priority, SourceReliability

@@ -6,7 +6,6 @@ from data_mining.models.enums import (
     DiscoveryType,
     EventType,
     FreeStatus,
-    NotificationStatus,
     Priority,
     RunStatus,
     SourceReliability,

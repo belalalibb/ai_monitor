@@ -1,12 +1,11 @@
 import logging
 import uuid
-from typing import List, Optional
+from typing import Optional
 from data_mining.comparison.change_detector import ChangeDetector
 from data_mining.comparison.semantic_comparator import SemanticComparator
 from data_mining.core.audit import AuditLogger
 from data_mining.core.normalizer import canonicalize_url, compute_content_hash, compute_url_hash, extract_domain
 from data_mining.core.project_knowledge import ProjectKnowledgeBase
-from data_mining.core.source_registry import get_default_providers
 from data_mining.db.repository import Repository
 from data_mining.extractors.free_ai_extractor import FreeAIExtractor
 from data_mining.extractors.html_extractor import HtmlContentExtractor

@@ -1,7 +1,6 @@
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock
-import pytest
 from data_mining.core.project_knowledge import ProjectKnowledgeBase
 from data_mining.db.repository import Repository
 from data_mining.scheduler.task_runner import PipelineTaskRunner

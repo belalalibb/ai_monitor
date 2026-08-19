@@ -1,7 +1,7 @@
 import hashlib
 import re
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
-from typing import Optional, Set
+from typing import Set
 
 # Tracking query parameters to strip from URLs
 TRACKING_PARAMS: Set[str] = {

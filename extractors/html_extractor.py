@@ -1,5 +1,4 @@
-import re
-from typing import Dict, Optional, Tuple
+from typing import Dict
 from bs4 import BeautifulSoup
 from data_mining.core.security import clean_scraped_text
 

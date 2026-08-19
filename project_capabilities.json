@@ -31,12 +31,8 @@
     "chatgpt_web_interface",
     "refrish_acc_manager"
   ],
-  "last_synced": "2026-08-19T02:04:28.465639+00:00",
+  "last_synced": "2026-08-19T14:02:34.474788+00:00",
   "metadata": {
-    "scanned_sources": [
-      "accounts_json\\chat_gpt.json",
-      "accounts_manager\\chat_gpt_cr.py",
-      "refrish_acc_manager\\chat_gpt_ref.py"
-    ]
+    "scanned_sources": []
   }
 }

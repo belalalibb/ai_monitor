@@ -1,6 +1,5 @@
 import tempfile
 from pathlib import Path
-import pytest
 from data_mining.db.repository import Repository
 from data_mining.models.enums import ComparisonStatus, DiscoveryType, EventType, FreeStatus, NotificationStatus, Priority
 from data_mining.models.schemas import ChangeEvent, ComparisonResult, ModelInfo

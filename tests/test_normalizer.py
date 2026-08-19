@@ -1,8 +1,6 @@
-import pytest
 from data_mining.core.normalizer import (
     canonicalize_url,
     compute_content_hash,
-    compute_url_hash,
     extract_domain,
     normalize_entity_name,
 )

@@ -1,11 +1,9 @@
-import json
 import logging
-from typing import Any, Dict, List, Optional
-import httpx
+from typing import List, Optional
 from data_mining.config import settings
 from data_mining.llm.base import LLMProvider
 from data_mining.llm.rule_based_fallback import RuleBasedFallbackProvider
-from data_mining.models.enums import ComparisonStatus, DiscoveryType, FreeStatus, Priority
+from data_mining.models.enums import DiscoveryType
 from data_mining.models.schemas import ComparisonResult, FreeServiceInfo, ModelInfo, ProjectCapabilityMap
 
 logger = logging.getLogger("data_mining.llm.gemini")

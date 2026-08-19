@@ -1,10 +1,9 @@
 import tempfile
 from pathlib import Path
-import pytest
 from data_mining.core.normalizer import compute_url_hash
 from data_mining.db.repository import Repository
-from data_mining.models.enums import EventType, FreeStatus, Priority
-from data_mining.models.schemas import ChangeEvent, FreeServiceInfo, ModelInfo, ProviderInfo
+from data_mining.models.enums import EventType
+from data_mining.models.schemas import ModelInfo, ProviderInfo
 
 
 def test_database_crud_and_deduplication():

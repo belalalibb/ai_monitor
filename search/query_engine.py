@@ -2,7 +2,6 @@ import logging
 from typing import List, Optional, Tuple
 from data_mining.db.repository import Repository
 from data_mining.llm.factory import get_llm_provider
-from data_mining.models.schemas import SearchQueryItem
 
 logger = logging.getLogger("data_mining.query_engine")
 

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
-from data_mining.models.enums import DiscoveryType, FreeStatus
+from typing import List, Optional
+from data_mining.models.enums import DiscoveryType
 from data_mining.models.schemas import ComparisonResult, FreeServiceInfo, ModelInfo, ProjectCapabilityMap
 
 

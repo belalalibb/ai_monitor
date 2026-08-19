@@ -31,3 +31,9 @@ lerna-debug.log*
 
 # misc
 .DS_Store
+
+# python
+__pycache__/
+*.pyc
+*.db
+.env

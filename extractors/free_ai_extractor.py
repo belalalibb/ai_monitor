@@ -1,5 +1,4 @@
 import logging
-import re
 from typing import Optional
 from data_mining.core.normalizer import extract_domain
 from data_mining.llm.base import LLMProvider

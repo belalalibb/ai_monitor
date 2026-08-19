@@ -1,13 +1,12 @@
 import json
 import logging
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 import httpx
 from data_mining.config import settings
-from data_mining.core.security import wrap_untrusted_content
 from data_mining.llm.base import LLMProvider
 from data_mining.llm.rule_based_fallback import RuleBasedFallbackProvider
-from data_mining.models.enums import ComparisonStatus, DiscoveryType, FreeStatus, Priority, SourceReliability
-from data_mining.models.schemas import ComparisonResult, EvidenceRecord, FreeServiceInfo, ModelInfo, ProjectCapabilityMap
+from data_mining.models.enums import ComparisonStatus, DiscoveryType, Priority
+from data_mining.models.schemas import ComparisonResult, FreeServiceInfo, ModelInfo, ProjectCapabilityMap
 
 logger = logging.getLogger("data_mining.llm.openai")
 

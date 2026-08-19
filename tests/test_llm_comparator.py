@@ -1,4 +1,3 @@
-import pytest
 from data_mining.llm.rule_based_fallback import RuleBasedFallbackProvider
 from data_mining.models.enums import ComparisonStatus, DiscoveryType
 from data_mining.models.schemas import ProjectCapabilityMap

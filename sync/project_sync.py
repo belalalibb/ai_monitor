@@ -1,7 +1,7 @@
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, Optional, Set
 from data_mining.config import PROJECT_ROOT, settings
 from data_mining.db.repository import Repository
 from data_mining.models.schemas import ProjectCapabilityMap, utc_now_iso
