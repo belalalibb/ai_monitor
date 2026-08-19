@@ -1,0 +1,42 @@
+{
+  "features": [
+    "account_lifecycle_management",
+    "chatgpt_account_creation",
+    "cookie_authentication",
+    "session_persistence",
+    "token_expiry_monitoring",
+    "token_refresh_monitoring"
+  ],
+  "models": [
+    "chatgpt-web",
+    "gpt-3.5-turbo",
+    "gpt-4",
+    "gpt-4o"
+  ],
+  "providers": [
+    "ChatGPT",
+    "OpenAI"
+  ],
+  "capabilities": [
+    "automated_token_refresh",
+    "chat",
+    "cookie_auth",
+    "scheduled_token_refresh",
+    "session_management",
+    "text_generation",
+    "token_auth"
+  ],
+  "integrations": [
+    "accounts_manager",
+    "chatgpt_web_interface",
+    "refrish_acc_manager"
+  ],
+  "last_synced": "2026-08-19T02:04:28.465639+00:00",
+  "metadata": {
+    "scanned_sources": [
+      "accounts_json\\chat_gpt.json",
+      "accounts_manager\\chat_gpt_cr.py",
+      "refrish_acc_manager\\chat_gpt_ref.py"
+    ]
+  }
+}

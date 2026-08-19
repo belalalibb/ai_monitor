@@ -1,0 +1,21 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Database and environment files
+*.db
+*.sqlite
+*.sqlite3
+.env
+.env.*
+
+# Testing & Cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs and temporary files
+*.log
+.DS_Store
+Thumbs.db
